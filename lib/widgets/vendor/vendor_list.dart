@@ -4,7 +4,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shop_admin/services/firebase_services.dart';
 
 class VendorList extends StatelessWidget {
-  const VendorList({Key? key}) : super(key: key);
+  final bool? approveStatus;
+  const VendorList({Key? key, this.approveStatus}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,6 @@ class VendorList extends StatelessWidget {
       return Expanded(
         flex: flex!,
         child: Container(
-          alignment: Alignment.centerLeft,
           height: 50,
           width: 50,
           decoration: BoxDecoration(
@@ -26,7 +26,9 @@ class VendorList extends StatelessWidget {
     }
 
     return StreamBuilder<QuerySnapshot>(
-      stream: _service.vendor.orderBy('time').snapshots(),
+      stream: _service.vendor
+          .where('approved', isEqualTo: approveStatus)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text('Something wrong!');
@@ -34,6 +36,12 @@ class VendorList extends StatelessWidget {
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
+        }
+
+        if (snapshot.data!.size == 0) {
+          return const Center(
+            child: Text('No vendors'),
+          );
         }
 
         return SingleChildScrollView(
@@ -51,8 +59,7 @@ class VendorList extends StatelessWidget {
                   // logo
                   _vendorData(
                     flex: 1,
-                    widget: Container(
-                      alignment: Alignment.center,
+                    widget: SizedBox(
                       height: 50,
                       width: 50,
                       child: Image.network(
@@ -82,9 +89,9 @@ class VendorList extends StatelessWidget {
                         ? Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 EasyLoading.show();
-                                _service.updateData(
+                                await _service.updateData(
                                   data: {
                                     'approved': false,
                                   },
@@ -107,14 +114,14 @@ class VendorList extends StatelessWidget {
                         : Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 EasyLoading.show();
-                                _service.updateData(
+                                await _service.updateData(
                                   data: {
                                     'approved': true,
                                   },
                                   reference: _service.vendor,
-                                  docName:dataa['uid'],
+                                  docName: dataa['uid'],
                                 );
                                 EasyLoading.dismiss();
                               },
@@ -160,4 +167,3 @@ class VendorList extends StatelessWidget {
     );
   }
 }
-
