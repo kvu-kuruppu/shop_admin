@@ -5,6 +5,7 @@ import 'package:shop_admin/screens/category/category.dart';
 import 'package:shop_admin/screens/category/main_category.dart';
 import 'package:shop_admin/screens/category/sub_category.dart';
 import 'package:shop_admin/screens/dashboard.dart';
+import 'package:shop_admin/screens/vendor_screen.dart';
 
 class SideMenu extends StatefulWidget {
   static const String id = 'side-menu';
@@ -38,6 +39,11 @@ class _SideMenuState extends State<SideMenu> {
       case SubCategoryScreen.id:
         setState(() {
           _selectedScreen = const SubCategoryScreen();
+        });
+        break;
+      case VendorScreen.id:
+        setState(() {
+          _selectedScreen = const VendorScreen();
         });
         break;
     }
@@ -74,6 +80,11 @@ class _SideMenuState extends State<SideMenu> {
                 route: SubCategoryScreen.id,
               ),
             ],
+          ),
+          AdminMenuItem(
+            title: 'Vendors',
+            route: VendorScreen.id,
+            icon: Icons.shop,
           ),
         ],
         selectedRoute: SideMenu.id,

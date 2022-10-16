@@ -15,6 +15,7 @@ void main() async {
     MaterialApp(
       home: const SideMenu(),
       builder: EasyLoading.init(),
+      debugShowCheckedModeBanner: false,
     ),
   );
 }
